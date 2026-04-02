@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Snowden-Phone platform manifest
+  Fork van: GrapheneOS/platform_manifest (branch: 16-qpr2)
+
+  Strategie:
+  - grapheneos remote: standaard voor alle GrapheneOS repos
+  - snowden remote: alleen repos met Snowden-Phone aanpassingen
+  - aosp remote: AOSP repos die niet door GrapheneOS worden geforkt
+
+  Device target: tegu (Pixel 9a) — kernel via device_google_tegu-kernels_6.1
+-->
+<manifest>
+  <!-- Remotes -->
+  <remote name="grapheneos"
+          fetch="https://github.com/GrapheneOS/"
+          revision="refs/heads/16-qpr2"/>
+  <remote name="snowden"
+          fetch="https://github.com/snowdenphone/"
+          revision="refs/heads/main"/>
+  <remote name="aosp"
+          fetch="https://android.googlesource.com"
+          review="https://android-review.googlesource.com/"/>
+
+  <!-- Default: AOSP als basis, sync parallel -->
+  <default revision="refs/tags/android-16.0.0_r4" remote="aosp" sync-j="4"/>
+
+  <!--
+    === SNOWDEN-PHONE CUSTOM REPOS ===
+    Alleen repos die wij aanpassen verwijzen naar snowden-phone org.
+    Alle andere repos blijven op grapheneos of aosp remote.
+  -->
+
+  <!-- Manifest: snowden-phone fork van GrapheneOS manifest -->
+  <!-- (deze repo zelf — al aanwezig als je dit bestand leest) -->
+
+  <!-- Settings app: Privacy Dashboard + UI aanpassingen -->
+  <project path="packages/apps/Settings"
+           name="platform_packages_apps_Settings"
+           groups="pdk-fs,pdk-cw-tvc,sysui-studio"
+           remote="snowden"
+           aosp-name="platform/packages/apps/Settings"/>
+
+  <!-- Branding: Snowden-Phone naam, logo, kleuren -->
+  <project path="branding"
+           name="branding"
+           remote="snowden"/>
+
+  <!--
+    === GRAPHENEOS REPOS (ongewijzigd van upstream) ===
+    Alles wat GrapheneOS al hardeert — wij forken dit NIET.
+    Rechtstreeks van GrapheneOS remote.
+  -->
+  <project path="art" name="platform_art" groups="pdk" remote="grapheneos" aosp-name="platform/art"/>
+  <project path="bionic" name="platform_bionic" groups="pdk" remote="grapheneos" aosp-name="platform/bionic"/>
+  <project path="bootable/recovery" name="platform_bootable_recovery" groups="pdk" remote="grapheneos" aosp-name="platform/bootable/recovery"/>
+  <project path="build/make" name="platform_build" groups="pdk,sysui-studio" remote="grapheneos" aosp-name="platform/build">
+    <linkfile src="CleanSpec.mk" dest="build/CleanSpec.mk"/>
+    <linkfile src="buildspec.mk.default" dest="build/buildspec.mk.default"/>
+    <linkfile src="core" dest="build/core"/>
+    <linkfile src="envsetup.sh" dest="build/envsetup.sh"/>
+    <linkfile src="target" dest="build/target"/>
+    <linkfile src="tools" dest="build/tools"/>
+  </project>
+  <project path="build/release" name="platform_build_release" groups="pdk,tradefed,sysui-studio" remote="grapheneos" aosp-name="platform/build/release"/>
+  <project path="build/soong" name="platform_build_soong" groups="pdk,tradefed,sysui-studio" remote="grapheneos" aosp-name="platform/build/soong">
+    <linkfile src="root.bp" dest="Android.bp"/>
+    <linkfile src="bootstrap.bash" dest="bootstrap.bash"/>
+  </project>
+  <project path="device/common" name="device_common" groups="pdk-cw-fs,pdk" remote="grapheneos" aosp-name="device/common"/>
+  <project path="device/generic/goldfish" name="device_generic_goldfish" groups="pdk" remote="grapheneos" aosp-name="device/generic/goldfish"/>
+  <project path="development" name="platform_development" groups="developers,pdk-cw-fs,pdk-fs,sysui-studio" remote="grapheneos" aosp-name="platform/development"/>
+  <project path="external/conscrypt" name="platform_external_conscrypt" remote="grapheneos" aosp-name="platform/external/conscrypt"/>
+  <project path="external/sqlite" name="platform_external_sqlite" remote="grapheneos" aosp-name="platform/external/sqlite"/>
+  <project path="frameworks/av" name="platform_frameworks_av" groups="pdk" remote="grapheneos" aosp-name="platform/frameworks/av"/>
+  <project path="frameworks/base" name="platform_frameworks_base" groups="pdk,sysui-studio" remote="grapheneos" aosp-name="platform/frameworks/base"/>
+  <project path="frameworks/native" name="platform_frameworks_native" groups="pdk" remote="grapheneos" aosp-name="platform/frameworks/native"/>
+  <project path="hardware/st/nfc" name="platform_hardware_st_nfc" remote="grapheneos" aosp-name="platform/hardware/st/nfc"/>
+  <project path="libcore" name="platform_libcore" groups="pdk" remote="grapheneos" aosp-name="platform/libcore"/>
+  <project path="packages/apps/Contacts" name="platform_packages_apps_Contacts" remote="grapheneos" aosp-name="platform/packages/apps/Contacts"/>
+  <project path="packages/apps/DeskClock" name="platform_packages_apps_DeskClock" remote="grapheneos" aosp-name="platform/packages/apps/DeskClock"/>
+  <project path="packages/apps/EmergencyInfo" name="platform_packages_apps_EmergencyInfo" remote="grapheneos" aosp-name="platform/packages/apps/EmergencyInfo"/>
+  <project path="packages/apps/Launcher3" name="platform_packages_apps_Launcher3" groups="pdk-fs,sysui-studio" remote="grapheneos" aosp-name="platform/packages/apps/Launcher3"/>
+  <project path="packages/apps/SetupWizard2" name="platform_packages_apps_SetupWizard2" remote="grapheneos"/>
+  <project path="packages/apps/StorageManager" name="platform_packages_apps_StorageManager" remote="grapheneos" aosp-name="platform/packages/apps/StorageManager"/>
+  <project path="packages/apps/Updater" name="platform_packages_apps_Updater" remote="grapheneos"/>
+  <project path="packages/inputmethods/LatinIME" name="platform_packages_inputmethods_LatinIME" groups="pdk-fs" remote="grapheneos" aosp-name="platform/packages/inputmethods/LatinIME"/>
+  <project path="packages/modules/Permission" name="platform_packages_modules_Permission" remote="grapheneos" aosp-name="platform/packages/modules/Permission"/>
+  <project path="system/core" name="platform_system_core" groups="pdk" remote="grapheneos" aosp-name="platform/system/core"/>
+  <project path="system/extras" name="platform_system_extras" groups="pdk-fs,pdk-cw-fs" remote="grapheneos" aosp-name="platform/system/extras"/>
+  <project path="system/netd" name="platform_system_netd" remote="grapheneos" aosp-name="platform/system/netd"/>
+  <project path="system/sepolicy" name="platform_system_sepolicy" groups="pdk,sysui-studio" remote="grapheneos" aosp-name="platform/system/sepolicy"/>
+  <project path="system/vold" name="platform_system_vold" groups="pdk" remote="grapheneos" aosp-name="platform/system/vold"/>
+
+  <!--
+    === DEVICE TREE: PIXEL 9A (tegu) ===
+    Device tree: AOSP (android.googlesource.com/device/google/tegu)
+    Kernel: GrapheneOS custom kernel repo
+    Vendor blobs: apart downloaden via vendor/google/tegu
+  -->
+
+  <!-- Kernel voor Pixel 9a — GrapheneOS gehardend -->
+  <project path="device/google/tegu-kernels/6.1"
+           name="device_google_tegu-kernels_6.1"
+           remote="grapheneos"
+           clone-depth="1"/>
+
+  <!--
+    NOTA: device/google/tegu (device tree) staat NIET in GitHub.
+    Dit komt van AOSP: https://android.googlesource.com/device/google/tegu
+    Huidige AOSP branch: android15-d4-release (Android 16 nog niet publiek)
+
+    Bij repo sync wordt dit automatisch opgehaald via de aosp remote
+    als het aan de default manifest wordt toegevoegd (na AOSP release Android 16).
+
+    Tijdelijke oplossing voor Android 16 build:
+    Gebruik de GrapheneOS build script die de tegu device tree direct van
+    Google's proprietary sources ophaalt (zie: grapheneos.org/build).
+  -->
+
+</manifest>
